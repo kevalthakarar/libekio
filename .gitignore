@@ -1,0 +1,54 @@
+autom4te.cache/
+aclocal.m4
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+configure~
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+stamp-h1
+
+tests/Makefile
+tests/Makefile.in
+
+
+# Generated Make File
+Makefile.in
+Makefile
+
+m4/
+
+# Build directories
+*.o
+*.lo
+*.la
+*.Plo
+*.plo
+.libs/
+src/*.o
+src/.libs/
+tests/*.o
+tests/.libs/
+
+
+# macOS specific files
+.DS_Store
+
+
+# Editor specific files
+.idea/
+.vscode/
+*.swp
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+*.Plo

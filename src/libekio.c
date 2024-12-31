@@ -110,7 +110,7 @@ int ev_run(struct ev_loop *loop, int flags)
         // Block and wait for events
         int new_events = ev_backend_poll(loop->backend, flags);
 
-        // printf("New Events %d Running %d", new_events, loop->running);
+        // printf("New Events %d Running %d\n", new_events, loop->running);
 
         if (new_events < 0)
         {

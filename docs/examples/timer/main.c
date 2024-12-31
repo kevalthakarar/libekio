@@ -1,12 +1,9 @@
 #include <libekio.h>
 #include <stdio.h>
 
-int repeat = 1;
-
 void stop_loop(ev_timer_t *timer, int revents)
 {
-    printf("stop_loop -> Hello World");
-    printf("timer %lu %d\n", timer->ident, revents);
+    printf("Hello World!");
 
     ev_break(ev_default_loop(), EVBREAK_ALL);
     return;

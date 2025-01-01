@@ -1,5 +1,5 @@
 # **Libekio**  
-*Asynchronous Event Loop Library* for **High-Performance Applications**
+*Asynchronous Event Loop Library* for **High-Performance I/O Applications**
 
 
 ## Overview

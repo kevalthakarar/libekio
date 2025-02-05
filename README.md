@@ -23,153 +23,9 @@ make -C docs
 
 ## Examples
 
-Below are two examples demonstrating the functionality of the library.
+Below are three examples demonstrating the functionality of the library.
 
-### 1. Timer Example (Similar to `setTimeout` in node js)
-
-The following code shows how to use the event loop to implement a simple timer that triggers an action after a delay
-
-```c
-#include <libekio.h>
-#include <stdio.h>
-
-void stop_loop(ev_timer_t *timer, int revents)
-{
-    printf("Hello World!");
-
-    ev_break(ev_default_loop(), EVBREAK_ALL);
-    return;
-}
-
-int main()
-{
-    struct ev_loop *loop = ev_default_loop();
-    ev_timer_t timer_watcher;
-
-    ev_timer_init(&timer_watcher, stop_loop, 4, 0);
-    ev_timer_start(loop, &timer_watcher);
-
-    // Start the event loop
-    ev_run(loop, 0);
-
-    return 0;
-}
-```
-
-
-### 2. Using Timer to understand Async Code
-
-The following example demonstrates how to write async code without blocking the event loop. This showcases the non-blocking nature of async operations. 
-
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include "libekio.h"
-#include <fcntl.h>
-
-#define TASK_COUNT 5
-
-// Simulated synchronous I/O task
-void sync_task(int task_id)
-{
-    printf("Starting synchronous I/O task %d\n", task_id);
-    sleep(1); // Simulate I/O latency (1 second)
-    printf("Completed synchronous I/O task %d\n", task_id);
-}
-
-void async_response(ev_timer_t *timer, int revents)
-{
-    printf("Completed Aynchronus Task %d\n", timer->ident);
-    return;
-}
-
-void run_synchronous()
-{
-    printf("=== Running Synchronous Tasks ===\n");
-    time_t start = time(NULL);
-
-    for (int i = 0; i < TASK_COUNT; i++)
-    {
-        sync_task(i);
-    }
-
-    time_t end = time(NULL);
-    printf("Synchronous tasks completed in %.2f seconds.\n\n", (double)(end - start));
-}
-
-void run_asynchronous()
-{
-    printf("=== Running Asynchronous Tasks ===\n");
-    ev_loop_t *loop = ev_default_loop();
-
-    time_t start = time(NULL);
-
-    ev_timer_t timer_watcher[TASK_COUNT];
-
-    for (int i = 0; i < TASK_COUNT; i++)
-    {
-        // expecting delay of 1 second to respond
-        ev_timer_init(&timer_watcher[i], async_response, 1, 0);
-        printf("Started Aynchronus Task %d\n", timer_watcher[i].ident);
-        ev_timer_start(loop, &timer_watcher[i]);
-    }
-
-    // Run the event loop
-    ev_run(loop, 0);
-
-    time_t end = time(NULL);
-    printf("Asynchronous tasks completed in %.2f seconds.\n\n", (double)(end - start));
-}
-
-int main()
-{
-    run_synchronous();
-    run_asynchronous();
-    return 0;
-}
-```
-
-Output
-```output
-=== Running Synchronous Tasks ===
-
-Starting synchronous I/O task 0
-Completed synchronous I/O task 0
-Starting synchronous I/O task 1
-Completed synchronous I/O task 1
-Starting synchronous I/O task 2
-Completed synchronous I/O task 2
-Starting synchronous I/O task 3
-Completed synchronous I/O task 3
-Starting synchronous I/O task 4
-Completed synchronous I/O task 4
-
-Synchronous tasks completed in 5.00 seconds.
-
-=== Running Asynchronous Tasks ===
-Started Aynchronus Task 1
-Started Aynchronus Task 2
-Started Aynchronus Task 3
-Started Aynchronus Task 4
-Started Aynchronus Task 5
-
-Completed Aynchronus Task 1
-Completed Aynchronus Task 2
-Completed Aynchronus Task 3
-Completed Aynchronus Task 4
-Completed Aynchronus Task 5
-
-Asynchronous tasks completed in 1.00 seconds.
-```
-
-here first we will run run_synchronous() function that completed it's task in 1 second  (used sleep to simulate IO operations delay)
-
-async task we just initialize ev_timer_init and then using start ev_timer_start we just add our event to event notification based on config.h file and to start and process all timer and event in last we just start ev_run;
-
-
-### 3. Asynchronous GET Request Example
+### 1. Asynchronous GET Request Example
 
 This example demonstrates how to send an HTTP GET request asynchronously without blocking the event loop.
 
@@ -339,3 +195,146 @@ Response from req id - 4 received
 Response from req id - 2 received
 Response from req id - 3 received
 ```
+
+### 2. Timer Example (Similar to `setTimeout` in node js)
+
+The following code shows how to use the event loop to implement a simple timer that triggers an action after a delay
+
+```c
+#include <libekio.h>
+#include <stdio.h>
+
+void stop_loop(ev_timer_t *timer, int revents)
+{
+    printf("Hello World!");
+
+    ev_break(ev_default_loop(), EVBREAK_ALL);
+    return;
+}
+
+int main()
+{
+    struct ev_loop *loop = ev_default_loop();
+    ev_timer_t timer_watcher;
+
+    ev_timer_init(&timer_watcher, stop_loop, 4, 0);
+    ev_timer_start(loop, &timer_watcher);
+
+    // Start the event loop
+    ev_run(loop, 0);
+
+    return 0;
+}
+```
+
+
+### 3. Using Timer to understand Async Code
+
+The following example demonstrates how to write async code without blocking the event loop. This showcases the non-blocking nature of async operations. 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
+#include "libekio.h"
+#include <fcntl.h>
+
+#define TASK_COUNT 5
+
+// Simulated synchronous I/O task
+void sync_task(int task_id)
+{
+    printf("Starting synchronous I/O task %d\n", task_id);
+    sleep(1); // Simulate I/O latency (1 second)
+    printf("Completed synchronous I/O task %d\n", task_id);
+}
+
+void async_response(ev_timer_t *timer, int revents)
+{
+    printf("Completed Aynchronus Task %d\n", timer->ident);
+    return;
+}
+
+void run_synchronous()
+{
+    printf("=== Running Synchronous Tasks ===\n");
+    time_t start = time(NULL);
+
+    for (int i = 0; i < TASK_COUNT; i++)
+    {
+        sync_task(i);
+    }
+
+    time_t end = time(NULL);
+    printf("Synchronous tasks completed in %.2f seconds.\n\n", (double)(end - start));
+}
+
+void run_asynchronous()
+{
+    printf("=== Running Asynchronous Tasks ===\n");
+    ev_loop_t *loop = ev_default_loop();
+
+    time_t start = time(NULL);
+
+    ev_timer_t timer_watcher[TASK_COUNT];
+
+    for (int i = 0; i < TASK_COUNT; i++)
+    {
+        // expecting delay of 1 second to respond
+        ev_timer_init(&timer_watcher[i], async_response, 1, 0);
+        printf("Started Aynchronus Task %d\n", timer_watcher[i].ident);
+        ev_timer_start(loop, &timer_watcher[i]);
+    }
+
+    // Run the event loop
+    ev_run(loop, 0);
+
+    time_t end = time(NULL);
+    printf("Asynchronous tasks completed in %.2f seconds.\n\n", (double)(end - start));
+}
+
+int main()
+{
+    run_synchronous();
+    run_asynchronous();
+    return 0;
+}
+```
+
+Output
+```output
+=== Running Synchronous Tasks ===
+
+Starting synchronous I/O task 0
+Completed synchronous I/O task 0
+Starting synchronous I/O task 1
+Completed synchronous I/O task 1
+Starting synchronous I/O task 2
+Completed synchronous I/O task 2
+Starting synchronous I/O task 3
+Completed synchronous I/O task 3
+Starting synchronous I/O task 4
+Completed synchronous I/O task 4
+
+Synchronous tasks completed in 5.00 seconds.
+
+=== Running Asynchronous Tasks ===
+Started Aynchronus Task 1
+Started Aynchronus Task 2
+Started Aynchronus Task 3
+Started Aynchronus Task 4
+Started Aynchronus Task 5
+
+Completed Aynchronus Task 1
+Completed Aynchronus Task 2
+Completed Aynchronus Task 3
+Completed Aynchronus Task 4
+Completed Aynchronus Task 5
+
+Asynchronous tasks completed in 1.00 seconds.
+```
+
+here first we will run run_synchronous() function that completed it's task in 1 second  (used sleep to simulate IO operations delay)
+
+async task we just initialize ev_timer_init and then using start ev_timer_start we just add our event to event notification based on config.h file and to start and process all timer and event in last we just start ev_run;
